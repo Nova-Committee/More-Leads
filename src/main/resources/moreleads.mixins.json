@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "nova.committee.moreleads.init.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "moreleads.refmap.json",
+  "mixins": [
+    "AmbientEntityMixin",
+    "EndermanTeleportMixin",
+    "MerchantEntityMixin",
+    "MobEntityMixin",
+    "PandaEntityMixin",
+    "TurtleEntityMixin",
+    "WaterCreatureEntityMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
