@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "moreleads",
+  "version": "${version}",
+  "name": "Moreleads",
+  "description": "",
+  "authors": [
+    "cnlimiter"
+  ],
+  "contact": {},
+  "license": "AGPL-3.0",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "nova.committee.moreleads.Moreleads"
+    ]
+  },
+  "mixins": [
+    "moreleads.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
