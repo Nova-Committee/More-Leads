@@ -121,3 +121,16 @@ abstract class EndermanTeleportMixin extends Monster {
         }
     }
 }
+
+//// boat
+//@Mixin(Boat.class)
+//abstract class BoatMixin extends Entity {
+//    public BoatMixin(EntityType<? extends Boat> entityType, Level world) {
+//        super(entityType, world);
+//    }
+//
+//    @Inject(method = "canBeLeashed", at = @At("RETURN"), cancellable = true)
+//    private void onCanBeLeashedBy(CallbackInfoReturnable<Boolean> cir) {
+//        cir.setReturnValue((cir.getReturnValue() || (!this.isLeashed()) && ModConfig.COMMON.PANDAS_ENABLED.get()));
+//    }
+//}

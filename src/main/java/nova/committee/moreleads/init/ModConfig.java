@@ -1,8 +1,7 @@
 package nova.committee.moreleads.init;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod;
-import nova.committee.moreleads.Static;
+import net.minecraftforge.fml.ModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -11,8 +10,12 @@ import org.apache.commons.lang3.tuple.Pair;
  * Date: 2022/4/12 13:30
  * Version: 1.0
  */
-@Mod.EventBusSubscriber(modid = Static.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfig {
+
+    public static void init() {
+        ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, CONFIG_SPEC);
+    }
+
     public static final Common COMMON;
     public static final ForgeConfigSpec CONFIG_SPEC;
 
