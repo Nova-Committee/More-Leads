@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "nova.committee",
+    "id": "moreleads",
+    "version": "${version}",
+    "metadata": {
+      "name": "Moreleads",
+      "description": "Some other leads",
+      "contributors": {
+        "cnlimiter": "Owner"
+      },
+      "contact": {
+        "issues": "https://github.com/Nova-Committee/More-Leads/issues",
+        "sources": "https://github.com/Nova-Committee/More-Leads"
+      }
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "client_init": "nova.committee.moreleads"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": "*"
+      },
+      {
+        "id": "minecraft",
+        "versions": "*"
+      }
+    ]
+  },
+  "mixin": "moreleads.mixins.json"
+}
+
