@@ -20,8 +20,8 @@
     "moreleads.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.3",
+    "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "1.19"
+    "minecraft": "1.19.2"
   }
 }
