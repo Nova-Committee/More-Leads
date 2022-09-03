@@ -6,11 +6,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import nova.committee.moreleads.init.ModConfig;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Static.MOD_ID)
 public class MoreLeads {
-
-    // Directly reference a log4j logger.
 
     public MoreLeads() {
         ModConfig.init();
