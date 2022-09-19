@@ -17,7 +17,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "client_init": "nova.committee.moreleads.Moreleads"
+      "init": "nova.committee.moreleads.Moreleads"
     },
     "depends": [
       {
