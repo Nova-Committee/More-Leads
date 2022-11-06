@@ -8,24 +8,15 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
 }
 
 dependencies {
     minecraft libs.minecraft
     mappings loom.layered {
         officialMojangMappings()
-        // Uncomment if you want to use Mojang mappings as your primary mappings, falling back on QM for parameters and Javadocs
     }
     modImplementation libs.quilt.loader
 
-    // QSL is not a complete API; You will need Quilted Fabric API to fill in the gaps.
-    // Quilted Fabric API will automatically pull in the correct QSL version.
-    //modImplementation libs.quilted.fabric.api
 }
 
 processResources {
@@ -46,8 +37,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 
     withSourcesJar()
-
-    // withJavadocJar()
 }
 
 jar {
@@ -61,14 +50,24 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            version = "${project.mod_version}"
+            artifactId = "${project.archives_base_name}"
+            groupId = "${project.maven_group}"
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
+
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
+            }
+        }
     }
 }
