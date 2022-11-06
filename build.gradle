@@ -10,12 +10,15 @@ buildscript {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
+plugins {
+    id 'maven-publish'
+}
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'nova.committee'
-version = '1.16.5-1.0.0'
+version = '1.16.5-1.0.1'
 
 java {
     archivesBaseName = 'MoreLeads-forge'
@@ -172,3 +175,29 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            version = "${project.mod_version}"
+            artifactId = "${project.archives_base_name}"
+            groupId = "${project.maven_group}"
+        }
+    }
+
+    repositories {
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
+
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
+            }
+        }
+    }
+}
