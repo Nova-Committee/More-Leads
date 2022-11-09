@@ -1,5 +1,6 @@
 plugins {
     id 'maven-publish'
+    id 'org.quiltmc.quilt-mappings-on-loom' version '4.2.1'
     alias(libs.plugins.quilt.loom)
 }
 
@@ -8,6 +9,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+
 }
 
 dependencies {
