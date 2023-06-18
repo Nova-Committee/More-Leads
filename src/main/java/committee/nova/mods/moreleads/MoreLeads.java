@@ -1,10 +1,10 @@
-package nova.committee.moreleads;
+package committee.nova.mods.moreleads;
 
+import committee.nova.mods.moreleads.init.ModConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import nova.committee.moreleads.init.ModConfig;
 
 @Mod(Static.MOD_ID)
 public class MoreLeads {

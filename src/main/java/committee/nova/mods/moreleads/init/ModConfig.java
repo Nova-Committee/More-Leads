@@ -1,4 +1,4 @@
-package nova.committee.moreleads.init;
+package committee.nova.mods.moreleads.init;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
