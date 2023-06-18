@@ -1,4 +1,4 @@
-package nova.committee.moreleads;
+package committee.nova.mods.moreleads;
 
 import net.fabricmc.api.ModInitializer;
 

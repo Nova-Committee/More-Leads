@@ -1,4 +1,4 @@
-package nova.committee.moreleads.init.mixin;
+package committee.nova.mods.moreleads.init.mixin;
 
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;

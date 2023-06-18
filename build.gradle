@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.2-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -40,7 +40,7 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = project.archives_base_name
+    archivesBaseName = project.archives_name + "-" + project.minecraft_version
     withSourcesJar()
 }
 
@@ -57,7 +57,7 @@ publishing {
             from components.java
 
             version = "${project.mod_version}"
-            artifactId = "${project.archives_base_name}"
+            artifactId = "${project.archives_name}"
             groupId = "${project.maven_group}"
         }
     }
