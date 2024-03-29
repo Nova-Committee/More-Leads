@@ -42,7 +42,7 @@ abstract class MobEntityMixin extends LivingEntity {
 
 // Allows trader entities (villagers and wandering traders) to be leashed
 @Mixin(AbstractVillager.class)
-abstract class MerchantEntityMixin extends AgeableMob implements Npc, Merchant {
+abstract class MerchantEntityMixin extends AgableMob implements Npc, Merchant {
     protected MerchantEntityMixin(EntityType<? extends AbstractVillager> entityType, Level world) {
         super(entityType, world);
     }
