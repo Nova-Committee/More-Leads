@@ -26,13 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @Description:
  */
 @Mixin(Mob.class)
-abstract class MobEntityMixin extends LivingEntity {
+abstract class MobEntityMixin extends LivingEntity implements Leashable{
+
     protected MobEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    @Shadow
-    public abstract boolean isLeashed();
 
     @Inject(method = "canBeLeashed", at = @At("RETURN"), cancellable = true)
     private void onCanBeLeashedBy(CallbackInfoReturnable<Boolean> cir) {
