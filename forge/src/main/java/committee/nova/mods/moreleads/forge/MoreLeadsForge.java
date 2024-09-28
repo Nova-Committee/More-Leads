@@ -1,13 +1,13 @@
 package committee.nova.mods.moreleads.forge;
 
-import committee.nova.mods.moreleads.common.Constants;
-import committee.nova.mods.moreleads.common.MoreLeadsCommon;
+import committee.nova.mods.moreleads.MoreLeads;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod(Constants.MOD_ID)
-public class MoreLeadsForge {
-    
+@Mod(MoreLeads.MOD_ID)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public final class MoreLeadsForge {
     public MoreLeadsForge() {
-        MoreLeadsCommon.init();
+        MoreLeads.init();
     }
 }

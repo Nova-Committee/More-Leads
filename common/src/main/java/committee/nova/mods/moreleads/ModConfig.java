@@ -1,4 +1,4 @@
-package committee.nova.mods.moreleads.common;
+package committee.nova.mods.moreleads;
 
 /**
  * @Project: MoreLeads

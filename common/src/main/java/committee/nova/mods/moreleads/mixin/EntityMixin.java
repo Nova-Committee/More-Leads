@@ -1,6 +1,6 @@
 package committee.nova.mods.moreleads.mixin;
 
-import committee.nova.mods.moreleads.common.ModConfig;
+import committee.nova.mods.moreleads.ModConfig;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.animal.Animal;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;

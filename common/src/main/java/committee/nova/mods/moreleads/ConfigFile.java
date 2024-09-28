@@ -1,6 +1,5 @@
-package committee.nova.mods.moreleads.common;
+package committee.nova.mods.moreleads;
 
-import committee.nova.mods.moreleads.platform.Services;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +50,7 @@ public class ConfigFile {
         public ConfigInstance(Class<?> cls) {
             this.pc = new PropertyClass(cls);
             File file = pc.getAnnotation(File.class);
-            this.path = Paths.get(Services.PLATFORM.getConfigPath().toString(), file.value());
+            this.path = Paths.get(ModCommon.getConfigPath().toString(), file.value());
         }
 
         public void read() {
