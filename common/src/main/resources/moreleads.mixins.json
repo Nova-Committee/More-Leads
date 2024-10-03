@@ -10,7 +10,9 @@
     "MobEntityMixin",
     "PandaEntityMixin",
     "TurtleEntityMixin",
-    "WaterCreatureEntityMixin"
+    "WaterCreatureEntityMixin",
+    "PlayerMixin",
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

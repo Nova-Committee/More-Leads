@@ -22,10 +22,16 @@
     "mixins": [
         "${mod_id}.mixins.json"
     ],
+    "accessWidener": "${mod_id}.accesswidener",
     "depends": {
         "fabricloader": ">=0.14",
         "fabric": "*",
         "minecraft": ">=1.21",
         "java": ">=17"
+    },
+    "custom": {
+        "loom:injected_interfaces": {
+            "net/minecraft/class_1657": ["net/minecraft/world/entity/Leashable"]
+        }
     }
 }
