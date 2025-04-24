@@ -1,10 +1,8 @@
-package committee.nova.mods.moreleads.common;
+package committee.nova.mods.moreleads.config;
 
-import committee.nova.mods.moreleads.platform.Services;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -83,12 +81,12 @@ public class ConfigFile {
         }
     }
 
-    public static void write(Class cls) {
+    public static void write(Class<?> cls) {
         ConfigInstance ci = new ConfigInstance(cls);
         ci.write();
     }
 
-    public static void sync(Class cls) {
+    public static void sync(Class<?> cls) {
         ConfigInstance ci = new ConfigInstance(cls);
         ci.read();
         ci.write();
