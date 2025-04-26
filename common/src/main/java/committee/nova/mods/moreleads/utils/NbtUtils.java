@@ -3,6 +3,7 @@ package committee.nova.mods.moreleads.utils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
+import committee.nova.mods.moreleads.MoreLeads;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -28,7 +29,7 @@ public class NbtUtils {
     }
 
     public static <T> void store(CompoundTag tag, String string, Codec<T> codec, DynamicOps<Tag> dynamicOps, T object) {
-        tag.put(string, codec.encodeStart(dynamicOps, object).getOrThrow());
+        tag.put(string, codec.encodeStart(dynamicOps, object).getOrThrow(true, string2 -> MoreLeads.LOGGER.error("Failed to write field ({}={}): {}", string, object, string2)));
     }
 
     public static <T> void storeNullable(CompoundTag tag, String string, Codec<T> codec, DynamicOps<Tag> dynamicOps, @Nullable T object) {
@@ -42,7 +43,7 @@ public class NbtUtils {
     }
 
     public static <T> void store(CompoundTag tag, MapCodec<T> mapCodec, DynamicOps<Tag> dynamicOps, T object) {
-        tag.merge((CompoundTag)mapCodec.encoder().encodeStart(dynamicOps, object).getOrThrow());
+        tag.merge((CompoundTag)mapCodec.encoder().encodeStart(dynamicOps, object).getOrThrow(true, string2 -> MoreLeads.LOGGER.error("Failed to write field ({}): {}", string2, object)));
     }
 
     public static <T> Optional<T> read(CompoundTag tag, String string, Codec<T> codec) {
@@ -53,7 +54,7 @@ public class NbtUtils {
         Tag tag1 = tag.get(string);
         return tag1 == null
                 ? Optional.empty()
-                : codec.parse(dynamicOps, tag).resultOrPartial(string2 -> LOGGER.error("Failed to read field ({}={}): {}", string, tag, string2));
+                : codec.parse(dynamicOps, tag).resultOrPartial(string2 -> MoreLeads.LOGGER.error("Failed to read field ({}={}): {}", string, tag, string2));
     }
 
     public static <T> Optional<T> read(CompoundTag tag, MapCodec<T> mapCodec) {
@@ -61,7 +62,6 @@ public class NbtUtils {
     }
 
     public static <T> Optional<T> read(CompoundTag tag, MapCodec<T> mapCodec, DynamicOps<Tag> dynamicOps) {
-        return mapCodec.decode(dynamicOps, dynamicOps.getMap(tag).getOrThrow())
-                .resultOrPartial(string -> LOGGER.error("Failed to read value ({}): {}", this, string));
+        return mapCodec.decode(dynamicOps, dynamicOps.getMap(tag).getOrThrow(true, string -> MoreLeads.LOGGER.error("Failed to read value ({}): {}", tag, string))).result();
     }
 }

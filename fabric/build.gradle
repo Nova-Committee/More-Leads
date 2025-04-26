@@ -7,6 +7,10 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -32,8 +36,6 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
-    common(project(path: ':fabric-like', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':fabric-like', configuration: 'transformProductionFabric')
 }
 
 processResources {

@@ -6,6 +6,14 @@
   "client": [
   ],
   "mixins": [
+    "AmbientEntityMixin",
+    "EndermanTeleportMixin",
+    "MerchantEntityMixin",
+    "MobEntityMixin",
+    "MobMixin",
+    "PandaEntityMixin",
+    "TurtleEntityMixin",
+    "WaterCreatureEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
