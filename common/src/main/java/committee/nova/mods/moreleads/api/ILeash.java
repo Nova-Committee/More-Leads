@@ -13,13 +13,15 @@ import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
-
-import static committee.nova.mods.moreleads.api.AreaLeash.leashableLeashedTo;
+import java.util.function.Predicate;
 
 /**
  * @Project: MoreLeads
@@ -28,6 +30,22 @@ import static committee.nova.mods.moreleads.api.AreaLeash.leashableLeashedTo;
  * @Description:
  */
 public interface ILeash {
+    static List<ILeash> leashableLeashedTo(Entity entity) {
+        return leashableInArea(entity, leashable -> leashable.moreLeads$getLeashHolder() == entity);
+    }
+
+    static List<ILeash> leashableInArea(Entity entity, Predicate<ILeash> predicate) {
+        return leashableInArea(entity.level(), entity.getBoundingBox().getCenter(), predicate);
+    }
+
+    static List<ILeash> leashableInArea(Level level, Vec3 vec3, Predicate<ILeash> predicate) {
+        double d = 32.0;
+        AABB aABB = AABB.ofSize(vec3, 32.0, 32.0, 32.0);
+        return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof ILeash leashable && predicate.test(leashable))
+                .stream()
+                .map(ILeash.class::cast)
+                .toList();
+    }
     default boolean shearOffAllLeashConnections(@Nullable Player player) {
         boolean bl = dropAllLeashConnections(player);
         if (bl && ((Entity)this).level() instanceof ServerLevel serverLevel) {
@@ -38,15 +56,15 @@ public interface ILeash {
     }
 
     private boolean dropAllLeashConnections(@Nullable Player player) {
-        List<Mob> list = leashableLeashedTo(((Entity)this));
+        List<ILeash> list = leashableLeashedTo(((Entity)this));
         boolean bl = !list.isEmpty();
         if (isLeashed()) {
             dropLeash();
             bl = true;
         }
 
-        for (Mob leashable2 : list) {
-            leashable2.dropLeash(true, true);
+        for (ILeash leashable2 : list) {
+            leashable2.dropLeash();
         }
 
         if (bl) {

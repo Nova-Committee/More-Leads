@@ -102,9 +102,9 @@ public abstract class BoatMixin extends Entity implements ILeash {
                 && player.isSecondaryUseActive()
             //&& !self.isBaby()
         ) {
-            List<Mob> list = AreaLeash.leashableInArea(moreLeads$self, leashablex -> leashablex.getLeashHolder() == player);
+            List<ILeash> list = ILeash.leashableInArea(moreLeads$self, leashablex -> leashablex.moreLeads$getLeashHolder() == player);
             if (!list.isEmpty()) {
-                for (Mob leashable2 : list) {
+                for (ILeash leashable2 : list) {
                     leashable2.setLeashedTo(moreLeads$self, true);
                 }
 
