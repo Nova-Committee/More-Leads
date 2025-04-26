@@ -11,8 +11,8 @@
     "sources": "https://github.com/Nova-Committee/more-leads"
   },
   "license": "${license}",
-  "icon": "${mod_id}.png",
-  "environment": "server",
+  "icon": "icon.png",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "committee.nova.mods.moreleads.MoreLeadsFabric"
@@ -24,5 +24,12 @@
   "depends": {
     "fabric-api": "*",
     "minecraft": "${minecraft_version_range}"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1690": [
+        "committee/nova/mods/moreleads/api/ILeash"
+      ]
+    }
   }
 }
