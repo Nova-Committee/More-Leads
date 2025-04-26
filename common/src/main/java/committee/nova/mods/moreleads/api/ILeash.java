@@ -41,7 +41,7 @@ public interface ILeash {
         List<Mob> list = leashableLeashedTo(((Entity)this));
         boolean bl = !list.isEmpty();
         if (isLeashed()) {
-            dropLeash(true, true);
+            dropLeash();
             bl = true;
         }
 
@@ -59,7 +59,7 @@ public interface ILeash {
 
     default boolean moreleads$startRidingV(boolean bl2, Entity entity, boolean bl) {
         if (bl2 && this.isLeashed()) {
-            this.dropLeash(true, true);
+            this.dropLeash();
         }
         return bl2;
     }
@@ -95,6 +95,14 @@ public interface ILeash {
         }
     }
 
+    default void dropLeash() {
+        dropLeash(true, true);
+    }
+
+    default void removeLeash() {
+        dropLeash(true, false);
+    }
+
     default void dropLeash(boolean bl, boolean bl2) {
         if (this.moreLeads$getLeashHolder() != null) {
             this.moreLeads$setLeashHolder(null);
@@ -116,7 +124,7 @@ public interface ILeash {
 
         if (this.moreLeads$getLeashHolder() != null) {
             if (!((Entity) this).isAlive() || !this.moreLeads$getLeashHolder().isAlive()) {
-                this.dropLeash(true, true);
+                this.dropLeash();
             }
         }
     }

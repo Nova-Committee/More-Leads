@@ -69,7 +69,7 @@ public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
             BlockPos blockPos = BlockPos.containing(boat.getEyePosition(f));
             BlockPos blockPos2 = BlockPos.containing(entity.getEyePosition(f));
             int r = this.getBlockLightLevel(boat, blockPos);
-            int s = this.entityRenderDispatcher.getRenderer(entity).getPackedLightCoords(entity, 1);
+            int s = this.entityRenderDispatcher.getRenderer(entity).getBlockLightLevel(entity, blockPos2);
             int t = boat.level().getBrightness(LightLayer.SKY, blockPos);
             int u = boat.level().getBrightness(LightLayer.SKY, blockPos2);
 

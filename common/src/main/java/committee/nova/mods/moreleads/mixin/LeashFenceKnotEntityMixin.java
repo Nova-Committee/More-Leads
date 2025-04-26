@@ -57,9 +57,9 @@ public abstract class LeashFenceKnotEntityMixin extends HangingEntity {
         if (!bl) {
             this.discard();
             if (player.getAbilities().instabuild) {
-                for (ILeash mob2 : list) {
-                    if (mob2.isLeashed() && mob2.moreLeads$getLeashHolder() == this) {
-                        mob2.dropLeash(true, false);
+                for (ILeash iLeash : list) {
+                    if (iLeash.isLeashed() && iLeash.moreLeads$getLeashHolder() == this) {
+                        iLeash.removeLeash();
                         bl2 = true;
                     }
                 }

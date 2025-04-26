@@ -2,7 +2,9 @@ package committee.nova.mods.moreleads.mixin;
 
 import committee.nova.mods.moreleads.api.AreaLeash;
 import committee.nova.mods.moreleads.api.ILeash;
+import committee.nova.mods.moreleads.config.ModConfig;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -61,6 +64,34 @@ public abstract class BoatMixin extends Entity implements ILeash {
     public void moreleads$tick(CallbackInfo ci) {
         if (!this.level().isClientSide) {
             this.tickLeash();
+            if (this.moreLeads$getLeashHolder() != null) {
+                Vec3 subtract = this.moreLeads$getLeashHolder().position().subtract(this.position());
+                double length = subtract.length();
+                double thisSpeed = this.getDeltaMovement().length();
+                double masterSpeed = this.moreLeads$getLeashHolder().getDeltaMovement().length();
+                if (length < 5) return;
+                if (!this.level().isClientSide && length > ModConfig.BOAT_LEASH_DISTANCE + 12 * masterSpeed) {
+                    if (masterSpeed > 1.5) {
+                        dropLeash();
+                        return;
+                    } else {
+                        this.moreLeads$getLeashHolder().addDeltaMovement(this.moreLeads$getLeashHolder().getDeltaMovement().scale(-0.1));
+                    }
+
+                }
+                double f = 0.06D + length / 100 + (masterSpeed - thisSpeed) / 4;
+                Vec3 v = subtract.normalize().scale(f);
+                if (subtract.horizontalDistance() > 4) {
+                    float yRotNeo = (float) (Mth.atan2(subtract.z, subtract.x) * (double) (180F / (float) Math.PI)) - 90.0F;
+                    if (this.getYRot() != yRotNeo) {
+                        float yRot = this.getYRot();
+                        float rot = Mth.wrapDegrees(yRotNeo - yRot) / 5;
+                        this.setYRot(yRot + rot);
+                    }
+                }
+
+                this.setDeltaMovement(getDeltaMovement().add(v));
+            }
         }
     }
 
@@ -96,7 +127,7 @@ public abstract class BoatMixin extends Entity implements ILeash {
 
     @Override
     public void removeAfterChangingDimensions() {
-        this.dropLeash(true, false);
+        this.removeLeash();
         this.getAllSlots().forEach(itemStack -> {
             if (!itemStack.isEmpty()) {
                 itemStack.setCount(0);
@@ -107,6 +138,14 @@ public abstract class BoatMixin extends Entity implements ILeash {
     @Override
     public boolean startRiding(Entity entity, boolean bl) {
         return moreleads$startRidingV(super.startRiding(entity, bl), entity, bl);
+    }
+
+    @Override
+    public void remove(Entity.RemovalReason removalReason) {
+        if (!this.level().isClientSide && removalReason.shouldDestroy() && this.isLeashed()) {
+            this.removeLeash();
+        }
+        super.remove(removalReason);
     }
 
     @Override

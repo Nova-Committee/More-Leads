@@ -31,4 +31,8 @@ public class ModConfig {
     @ConfigFile.Comment("Enable leading pandas")
     public static boolean PANDAS_ENABLED = true;
 
+    @ConfigFile.Comment("Boat Leash distance")
+    @ConfigFile.Range(min = 0, max =  128)
+    public static int BOAT_LEASH_DISTANCE = 24;
+
 }
