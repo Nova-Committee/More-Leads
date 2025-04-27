@@ -1,10 +1,10 @@
 package committee.nova.mods.moreleads.api;
 
 import committee.nova.mods.moreleads.platform.PlatformHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,6 +1,5 @@
 package committee.nova.mods.moreleads.mixin;
 
-import committee.nova.mods.moreleads.api.AreaLeash;
 import committee.nova.mods.moreleads.api.ILeash;
 import committee.nova.mods.moreleads.config.ModConfig;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +8,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
@@ -100,7 +98,6 @@ public abstract class BoatMixin extends Entity implements ILeash {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (moreLeads$self.isAlive()
                 && player.isSecondaryUseActive()
-            //&& !self.isBaby()
         ) {
             List<ILeash> list = ILeash.leashableInArea(moreLeads$self, leashablex -> leashablex.moreLeads$getLeashHolder() == player);
             if (!list.isEmpty()) {

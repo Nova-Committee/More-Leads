@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +38,6 @@ public interface ILeash {
     }
 
     static List<ILeash> leashableInArea(Level level, Vec3 vec3, Predicate<ILeash> predicate) {
-        double d = 32.0;
         AABB aABB = AABB.ofSize(vec3, 32.0, 32.0, 32.0);
         return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof ILeash leashable && predicate.test(leashable))
                 .stream()
@@ -81,10 +79,6 @@ public interface ILeash {
         }
         return bl2;
     }
-
-
-
-
 
     @Nullable
     Entity moreLeads$getLeashHolder();
@@ -182,15 +176,15 @@ public interface ILeash {
                 compoundTag3.putInt("Z", blockPos.getZ());
             }
 
-            compoundTag.put("Leash", compoundTag3);
+            compoundTag.put("ILeash", compoundTag3);
         } else if (this.moreLeads$getLeashInfoTag() != null) {
-            compoundTag.put("Leash", this.moreLeads$getLeashInfoTag().copy());
+            compoundTag.put("ILeash", this.moreLeads$getLeashInfoTag().copy());
         }
     }
 
     default void loadData(CompoundTag compoundTag) {
-        if (compoundTag.contains("Leash", 10)) {
-            this.moreLeads$setLeashInfoTag(compoundTag.getCompound("Leash"));
+        if (compoundTag.contains("ILeash", 10)) {
+            this.moreLeads$setLeashInfoTag(compoundTag.getCompound("ILeash"));
         }
     }
 }

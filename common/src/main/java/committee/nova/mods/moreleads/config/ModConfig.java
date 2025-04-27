@@ -32,7 +32,7 @@ public class ModConfig {
     public static boolean PANDAS_ENABLED = true;
 
     @ConfigFile.Comment("Boat Leash distance")
-    @ConfigFile.Range(min = 0, max =  128)
+    @ConfigFile.Range(min = 0, max =  256)
     public static int BOAT_LEASH_DISTANCE = 24;
 
 }
