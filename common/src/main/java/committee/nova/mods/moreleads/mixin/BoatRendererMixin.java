@@ -2,20 +2,20 @@ package committee.nova.mods.moreleads.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import committee.nova.mods.moreleads.api.ILeash;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.BoatRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,13 +30,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(BoatRenderer.class)
 public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
-    protected BoatRendererMixin(EntityRendererProvider.Context context) {
-        super(context);
+
+    protected BoatRendererMixin(EntityRenderDispatcher entityRenderDispatcher) {
+        super(entityRenderDispatcher);
     }
 
     @Inject(method = "render(Lnet/minecraft/world/entity/vehicle/Boat;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "TAIL"), cancellable = true)
     public void moreleads$render(Boat boat, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
-        if (boat instanceof ILeash leash) {
+        if (boat instanceof ILeash) {
+            ILeash leash = (ILeash) boat;
             Entity entity = leash.moreLeads$getLeashHolder();
             if (entity != null) {
                 this.moreLeads$renderLeash(boat, g, poseStack, multiBufferSource, entity);
@@ -49,8 +51,8 @@ public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
     private <E extends Entity> void moreLeads$renderLeash(Boat boat, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, E entity) {
         poseStack.pushPose();
             Vec3 vec3 = entity.getRopeHoldPosition(f);
-            double d = (double)(Mth.lerp(f, boat.yRotO, boat.getYRot()) * (float) (Math.PI / 180.0)) + (Math.PI / 2);
-            Vec3 vec32 = boat.getLeashOffset(f);
+            double d = (double)(Mth.lerp(f, boat.yRotO, boat.yRot) * (float) (Math.PI / 180.0)) + (Math.PI / 2);
+            Vec3 vec32 = boat.getLeashOffset();
             double e = Math.cos(d) * vec32.z + Math.sin(d) * vec32.x;
             double g = Math.sin(d) * vec32.z - Math.cos(d) * vec32.x;
             double h = Mth.lerp(f, boat.xo, boat.getX()) + e;
@@ -63,15 +65,15 @@ public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
             float n = 0.025F;
             VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.leash());
             Matrix4f matrix4f = poseStack.last().pose();
-            float o = Mth.invSqrt(k * k + m * m) * 0.025F / 2.0F;
+            float o = Mth.fastInvSqrt(k * k + m * m) * 0.025F / 2.0F;
             float p = m * o;
             float q = k * o;
-            BlockPos blockPos = BlockPos.containing(boat.getEyePosition(f));
-            BlockPos blockPos2 = BlockPos.containing(entity.getEyePosition(f));
+            BlockPos blockPos = new BlockPos(Mth.floor(boat.getEyePosition(f).x), Mth.floor(boat.getEyePosition(f).y), Mth.floor(boat.getEyePosition(f).z));
+            BlockPos blockPos2 = new BlockPos(Mth.floor(entity.getEyePosition(f).x), Mth.floor(entity.getEyePosition(f).y), Mth.floor(entity.getEyePosition(f).z));
             int r = this.getBlockLightLevel(boat, blockPos);
             int s = this.entityRenderDispatcher.getRenderer(entity).getBlockLightLevel(entity, blockPos2);
-            int t = boat.level().getBrightness(LightLayer.SKY, blockPos);
-            int u = boat.level().getBrightness(LightLayer.SKY, blockPos2);
+            int t = boat.level.getBrightness(LightLayer.SKY, blockPos);
+            int u = boat.level.getBrightness(LightLayer.SKY, blockPos2);
 
             for (int v = 0; v <= 24; v++) {
                 moreLeads$addVertexPair(vertexConsumer, matrix4f, k, l, m, r, s, t, u, 0.025F, 0.025F, p, q, v, false);

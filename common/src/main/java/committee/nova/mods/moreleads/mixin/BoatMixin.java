@@ -13,7 +13,6 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -60,7 +59,7 @@ public abstract class BoatMixin extends Entity implements ILeash {
 
     @Inject(method = "tick", at = @At(value = "TAIL"))
     public void moreleads$tick(CallbackInfo ci) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.tickLeash();
             if (this.moreLeads$getLeashHolder() != null) {
                 Vec3 subtract = this.moreLeads$getLeashHolder().position().subtract(this.position());
@@ -68,23 +67,23 @@ public abstract class BoatMixin extends Entity implements ILeash {
                 double thisSpeed = this.getDeltaMovement().length();
                 double masterSpeed = this.moreLeads$getLeashHolder().getDeltaMovement().length();
                 if (length < 5) return;
-                if (!this.level().isClientSide && length > ModConfig.BOAT_LEASH_DISTANCE + 12 * masterSpeed) {
+                if (!this.level.isClientSide && length > ModConfig.BOAT_LEASH_DISTANCE + 12 * masterSpeed) {
                     if (masterSpeed > 1.5) {
                         dropLeash();
                         return;
                     } else {
-                        this.moreLeads$getLeashHolder().addDeltaMovement(this.moreLeads$getLeashHolder().getDeltaMovement().scale(-0.1));
+                        this.moreLeads$getLeashHolder().setDeltaMovement(this.moreLeads$getLeashHolder().getDeltaMovement().add(this.moreLeads$getLeashHolder().getDeltaMovement().scale(-0.1)));
                     }
 
                 }
                 double f = 0.06D + length / 100 + (masterSpeed - thisSpeed) / 4;
                 Vec3 v = subtract.normalize().scale(f);
-                if (subtract.horizontalDistance() > 4) {
+                double horizontalDistance = Math.sqrt(v.x * v.x + v.z * v.z);
+                if (horizontalDistance > 4) {
                     float yRotNeo = (float) (Mth.atan2(subtract.z, subtract.x) * (double) (180F / (float) Math.PI)) - 90.0F;
-                    if (this.getYRot() != yRotNeo) {
-                        float yRot = this.getYRot();
-                        float rot = Mth.wrapDegrees(yRotNeo - yRot) / 5;
-                        this.setYRot(yRot + rot);
+                    if (this.yRot != yRotNeo) {
+                        float rot = Mth.wrapDegrees(yRotNeo - this.yRot) / 5;
+                        this.yRot += rot;
                     }
                 }
 
@@ -105,19 +104,18 @@ public abstract class BoatMixin extends Entity implements ILeash {
                     leashable2.setLeashedTo(moreLeads$self, true);
                 }
 
-                moreLeads$self.level().gameEvent(GameEvent.ENTITY_INTERACT, moreLeads$self.blockPosition(), GameEvent.Context.of(player));
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+                cir.setReturnValue(InteractionResult.sidedSuccess(this.level.isClientSide));
             }
         }
 
-        if (itemStack.is(Items.SHEARS) && shearOffAllLeashConnections(player)) {
+        if (itemStack.getItem() == Items.SHEARS && shearOffAllLeashConnections(player)) {
             itemStack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(interactionHand));
             cir.setReturnValue(InteractionResult.SUCCESS);
         } else {
-            if (itemStack.is(Items.LEAD) && this.canBeLeashed(player)) {
+            if (itemStack.getItem() == Items.LEAD && this.canBeLeashed(player)) {
                 this.setLeashedTo(player, true);
                 itemStack.shrink(1);
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+                cir.setReturnValue(InteractionResult.sidedSuccess(this.level.isClientSide));
             }
         }
     }
@@ -138,17 +136,17 @@ public abstract class BoatMixin extends Entity implements ILeash {
     }
 
     @Override
-    public void remove(Entity.RemovalReason removalReason) {
-        if (!this.level().isClientSide && removalReason.shouldDestroy() && this.isLeashed()) {
+    public void remove() {
+        if (!this.level.isClientSide && this.isLeashed()) {
             this.removeLeash();
         }
-        super.remove(removalReason);
+        super.remove();
     }
 
     @Override
     public @Nullable Entity moreLeads$getLeashHolder() {
-        if (this.moreLeads$leashHolder == null && this.moreLeads$delayedLeashHolderId != 0 && this.level().isClientSide) {
-            this.moreLeads$leashHolder = this.level().getEntity(this.moreLeads$delayedLeashHolderId);
+        if (this.moreLeads$leashHolder == null && this.moreLeads$delayedLeashHolderId != 0 && this.level.isClientSide) {
+            this.moreLeads$leashHolder = this.level.getEntity(this.moreLeads$delayedLeashHolderId);
         }
 
         return this.moreLeads$leashHolder;

@@ -10,7 +10,6 @@ import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Project: MoreLeads
@@ -38,12 +38,12 @@ public abstract class LeashFenceKnotEntityMixin extends HangingEntity {
     @Inject(method = "interact", at = @At(value = "RETURN", ordinal = 1))
     public void moreleads$interact(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         boolean bl = false;
-        List<ILeash> list = this.level()
+        List<ILeash> list = this.level
                 .getEntitiesOfClass(Entity.class, new AABB(this.getX() - 7.0, this.getY() - 7.0, this.getZ() - 7.0, this.getX() + 7.0, this.getY() + 7.0, this.getZ() + 7.0),
-                        entity -> entity instanceof ILeash leashable)
+                        entity -> entity instanceof ILeash)
                 .stream()
                 .map(ILeash.class::cast)
-                .toList();
+                .collect(Collectors.toList());
 
         for (ILeash mob : list) {
             if (mob.moreLeads$getLeashHolder() == player) {
@@ -52,21 +52,15 @@ public abstract class LeashFenceKnotEntityMixin extends HangingEntity {
             }
         }
 
-        boolean bl2 = false;
         if (!bl) {
-            this.discard();
-            if (player.getAbilities().instabuild) {
+            this.remove();
+            if (player.abilities.instabuild) {
                 for (ILeash iLeash : list) {
                     if (iLeash.isLeashed() && iLeash.moreLeads$getLeashHolder() == this) {
                         iLeash.removeLeash();
-                        bl2 = true;
                     }
                 }
             }
-        }
-
-        if (bl || bl2) {
-            this.gameEvent(GameEvent.BLOCK_ATTACH, player);
         }
     }
 }

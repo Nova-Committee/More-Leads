@@ -22,7 +22,6 @@
     "${mod_id}.mixins.json"
   ],
   "depends": {
-    "fabric-api": "*",
     "minecraft": "${minecraft_version_range}"
   },
   "custom": {

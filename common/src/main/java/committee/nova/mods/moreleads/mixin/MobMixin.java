@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,13 +45,11 @@ public abstract class MobMixin extends LivingEntity{
                 for (Mob leashable2 : list) {
                     leashable2.setLeashedTo(moreLeads$self, true);
                 }
-
-                moreLeads$self.level().gameEvent(GameEvent.ENTITY_INTERACT, moreLeads$self.blockPosition(), GameEvent.Context.of(player));
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+                cir.setReturnValue(InteractionResult.sidedSuccess(this.level.isClientSide));
             }
         }
 
-        if (itemStack.is(Items.SHEARS) && AreaLeash.shearOffAllLeashConnections(moreLeads$self, player)) {
+        if (itemStack.getItem() == Items.SHEARS && AreaLeash.shearOffAllLeashConnections(moreLeads$self, player)) {
             itemStack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(interactionHand));
             cir.setReturnValue(InteractionResult.SUCCESS);
         }

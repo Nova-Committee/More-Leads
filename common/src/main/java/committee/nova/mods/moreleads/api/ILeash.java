@@ -13,7 +13,6 @@ import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @Project: MoreLeads
@@ -34,26 +34,28 @@ public interface ILeash {
     }
 
     static List<ILeash> leashableInArea(Entity entity, Predicate<ILeash> predicate) {
-        return leashableInArea(entity.level(), entity.getBoundingBox().getCenter(), predicate);
+        return leashableInArea(entity.level, entity.getBoundingBox().getCenter(), predicate);
     }
 
     static List<ILeash> leashableInArea(Level level, Vec3 vec3, Predicate<ILeash> predicate) {
-        AABB aABB = AABB.ofSize(vec3, 32.0, 32.0, 32.0);
-        return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof ILeash leashable && predicate.test(leashable))
+        double d = 32;
+        AABB aABB = new AABB(vec3.x - d / 2.0, vec3.y - d / 2.0, vec3.z - d / 2.0, vec3.x + d / 2.0, vec3.y + d / 2.0, vec3.z + d / 2.0);
+        return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof ILeash && predicate.test((ILeash) entity))
                 .stream()
                 .map(ILeash.class::cast)
-                .toList();
+                .collect(Collectors.toList());
     }
     default boolean shearOffAllLeashConnections(@Nullable Player player) {
         boolean bl = dropAllLeashConnections(player);
-        if (bl && ((Entity)this).level() instanceof ServerLevel serverLevel) {
-            serverLevel.playSound(null, ((Entity)this).blockPosition(), SoundEvents.SHEEP_SHEAR, player != null ? player.getSoundSource() : ((Entity)this).getSoundSource());
+        if (bl && ((Entity) this).level instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) ((Entity) this).level;
+            serverLevel.playSound(null, ((Entity)this).blockPosition(), SoundEvents.SHEEP_SHEAR, player != null ? player.getSoundSource() : ((Entity)this).getSoundSource(), 1, 1);
         }
 
         return bl;
     }
 
-    private boolean dropAllLeashConnections(@Nullable Player player) {
+    default boolean dropAllLeashConnections(@Nullable Player player) {
         List<ILeash> list = leashableLeashedTo(((Entity)this));
         boolean bl = !list.isEmpty();
         if (isLeashed()) {
@@ -65,12 +67,7 @@ public interface ILeash {
             leashable2.dropLeash();
         }
 
-        if (bl) {
-            ((Entity)this).gameEvent(GameEvent.SHEAR, player);
-            return true;
-        } else {
-            return false;
-        }
+        return bl;
     }
 
     default boolean moreleads$startRidingV(boolean bl2, Entity entity, boolean bl) {
@@ -98,8 +95,8 @@ public interface ILeash {
     default void setLeashedTo(Entity entity, boolean bl) {
         this.moreLeads$setLeashHolder(entity);
         this.moreLeads$setLeashInfoTag(null);
-        if (!((Entity) this).level().isClientSide && bl && ((Entity) this).level() instanceof ServerLevel) {
-            ((ServerLevel)((Entity) this).level()).getChunkSource().broadcast(((Entity) this), new ClientboundSetEntityLinkPacket(((Entity) this), this.moreLeads$getLeashHolder()));
+        if (!((Entity) this).level.isClientSide && bl && ((Entity) this).level instanceof ServerLevel) {
+            ((ServerLevel)((Entity) this).level).getChunkSource().broadcast(((Entity) this), new ClientboundSetEntityLinkPacket(((Entity) this), this.moreLeads$getLeashHolder()));
         }
 
         if (((Entity) this).isPassenger()) {
@@ -119,12 +116,12 @@ public interface ILeash {
         if (this.moreLeads$getLeashHolder() != null) {
             this.moreLeads$setLeashHolder(null);
             this.moreLeads$setLeashInfoTag(null);
-            if (!((Entity) this).level().isClientSide && bl2) {
+            if (!((Entity) this).level.isClientSide && bl2) {
                 ((Entity) this).spawnAtLocation(Items.LEAD);
             }
 
-            if (!((Entity) this).level().isClientSide && bl && ((Entity) this).level() instanceof ServerLevel) {
-                ((ServerLevel)((Entity) this).level()).getChunkSource().broadcast(((Entity) this), new ClientboundSetEntityLinkPacket(((Entity) this), null));
+            if (!((Entity) this).level.isClientSide && bl && ((Entity) this).level instanceof ServerLevel) {
+                ((ServerLevel)((Entity) this).level).getChunkSource().broadcast(((Entity) this), new ClientboundSetEntityLinkPacket(((Entity) this), null));
             }
         }
     }
@@ -141,18 +138,18 @@ public interface ILeash {
         }
     }
 
-    private void restoreLeashFromSave() {
-        if (this.moreLeads$getLeashInfoTag() != null && ((Entity) this).level() instanceof ServerLevel) {
+    default void restoreLeashFromSave() {
+        if (this.moreLeads$getLeashInfoTag() != null && ((Entity) this).level instanceof ServerLevel) {
             if (this.moreLeads$getLeashInfoTag().hasUUID("UUID")) {
                 UUID uUID = this.moreLeads$getLeashInfoTag().getUUID("UUID");
-                Entity entity = ((ServerLevel)((Entity) this).level()).getEntity(uUID);
+                Entity entity = ((ServerLevel)((Entity) this).level).getEntity(uUID);
                 if (entity != null) {
                     this.setLeashedTo(entity, true);
                     return;
                 }
             } else if (this.moreLeads$getLeashInfoTag().contains("X", 99) && this.moreLeads$getLeashInfoTag().contains("Y", 99) && this.moreLeads$getLeashInfoTag().contains("Z", 99)) {
                 BlockPos blockPos = NbtUtils.readBlockPos(this.moreLeads$getLeashInfoTag());
-                this.setLeashedTo(LeashFenceKnotEntity.getOrCreateKnot(((Entity) this).level(), blockPos), true);
+                this.setLeashedTo(LeashFenceKnotEntity.getOrCreateKnot(((Entity) this).level, blockPos), true);
                 return;
             }
 

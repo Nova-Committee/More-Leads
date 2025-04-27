@@ -20,7 +20,8 @@ public abstract class ClientPktListener {
     @Inject(method = "handleEntityLinkPacket", at = @At(value = "TAIL"))
     public void moreleads$handleEntityLinkPacket(ClientboundSetEntityLinkPacket clientboundSetEntityLinkPacket, CallbackInfo ci) {
         Entity entity = ((ClientPacketListener) (Object) this).getLevel().getEntity(clientboundSetEntityLinkPacket.getSourceId());
-        if (entity instanceof ILeash leash) {
+        if (entity instanceof ILeash) {
+            ILeash leash = (ILeash) entity;
             leash.moreLeads$setDelayedLeashHolderId(clientboundSetEntityLinkPacket.getDestId());
         }
     }

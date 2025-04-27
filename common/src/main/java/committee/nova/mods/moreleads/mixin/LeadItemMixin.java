@@ -11,12 +11,13 @@ import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.stream.Collectors;
 
 /**
  * @Project: MoreLeads
@@ -46,10 +47,10 @@ public abstract class LeadItemMixin extends Item {
 
         for (ILeash mob : level
                 .getEntitiesOfClass(Entity.class, new AABB((double)i - (double)7.0F, (double)j - (double)7.0F, (double)k - (double)7.0F, (double)i + (double)7.0F, (double)j + (double)7.0F, (double)k + (double)7.0F),
-                        entity -> entity instanceof ILeash leashable)
+                        entity -> entity instanceof ILeash)
                 .stream()
                 .map(ILeash.class::cast)
-                .toList()
+                .collect(Collectors.toList())
         ) {
             if (mob.moreLeads$getLeashHolder() == player) {
                 if (leashFenceKnotEntity == null) {
@@ -60,10 +61,6 @@ public abstract class LeadItemMixin extends Item {
                 mob.setLeashedTo(leashFenceKnotEntity, true);
                 bl = true;
             }
-        }
-
-        if (bl) {
-            level.gameEvent(GameEvent.BLOCK_ATTACH, blockPos, GameEvent.Context.of(player));
         }
 
         cir.setReturnValue(bl ? InteractionResult.SUCCESS : InteractionResult.PASS);
