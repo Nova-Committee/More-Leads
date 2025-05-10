@@ -8,6 +8,7 @@
     "ClientPktListener"
   ],
   "mixins": [
+    "AbstractMinecartMixin",
     "BoatMixin",
     "LeadItemMixin",
     "LeashFenceKnotEntityMixin",
