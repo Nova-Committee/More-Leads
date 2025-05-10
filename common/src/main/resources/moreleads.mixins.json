@@ -8,17 +8,17 @@
     "ClientPktListener"
   ],
   "mixins": [
-    "AmbientEntityMixin",
     "BoatMixin",
-    "EndermanTeleportMixin",
     "LeadItemMixin",
     "LeashFenceKnotEntityMixin",
-    "MerchantEntityMixin",
-    "MobEntityMixin",
     "MobMixin",
-    "PandaEntityMixin",
-    "TurtleEntityMixin",
-    "WaterCreatureEntityMixin"
+    "lead.AmbientEntityMixin",
+    "lead.EndermanTeleportMixin",
+    "lead.MerchantEntityMixin",
+    "lead.MobEntityMixin",
+    "lead.PandaEntityMixin",
+    "lead.TurtleEntityMixin",
+    "lead.WaterCreatureEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

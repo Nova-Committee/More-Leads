@@ -63,7 +63,7 @@ public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
             float n = 0.025F;
             VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.leash());
             Matrix4f matrix4f = poseStack.last().pose();
-            float o = Mth.invSqrt(k * k + m * m) * 0.025F / 2.0F;
+            float o = Mth.invSqrt(k * k + m * m) * n / 2.0F;
             float p = m * o;
             float q = k * o;
             BlockPos blockPos = BlockPos.containing(boat.getEyePosition(f));
@@ -74,11 +74,11 @@ public abstract class BoatRendererMixin extends EntityRenderer<Boat> {
             int u = boat.level().getBrightness(LightLayer.SKY, blockPos2);
 
             for (int v = 0; v <= 24; v++) {
-                moreLeads$addVertexPair(vertexConsumer, matrix4f, k, l, m, r, s, t, u, 0.025F, 0.025F, p, q, v, false);
+                moreLeads$addVertexPair(vertexConsumer, matrix4f, k, l, m, r, s, t, u, n, n, p, q, v, false);
             }
 
             for (int v = 24; v >= 0; v--) {
-                moreLeads$addVertexPair(vertexConsumer, matrix4f, k, l, m, r, s, t, u, 0.025F, 0.0F, p, q, v, true);
+                moreLeads$addVertexPair(vertexConsumer, matrix4f, k, l, m, r, s, t, u, n, n, p, q, v, true);
             }
         poseStack.popPose();
     }
