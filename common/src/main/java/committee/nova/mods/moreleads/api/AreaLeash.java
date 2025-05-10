@@ -21,20 +21,20 @@ import java.util.function.Predicate;
  * @Description:
  */
 public interface AreaLeash {
-    static List<Mob> leashableLeashedTo(Entity entity) {
-        return leashableInArea(entity, leashable -> leashable.getLeashHolder() == entity);
+    static List<ILeash> leashableLeashedTo(Entity entity) {
+        return leashableInArea(entity, leashable -> leashable.moreLeads$getLeashHolder() == entity);
     }
 
-    static List<Mob> leashableInArea(Entity entity, Predicate<Mob> predicate) {
+    static List<ILeash> leashableInArea(Entity entity, Predicate<ILeash> predicate) {
         return leashableInArea(entity.level(), entity.getBoundingBox().getCenter(), predicate);
     }
 
-    static List<Mob> leashableInArea(Level level, Vec3 vec3, Predicate<Mob> predicate) {
+    static List<ILeash> leashableInArea(Level level, Vec3 vec3, Predicate<ILeash> predicate) {
         double d = 32.0;
         AABB aABB = AABB.ofSize(vec3, 32.0, 32.0, 32.0);
-        return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof Mob leashable && predicate.test(leashable))
+        return level.getEntitiesOfClass(Entity.class, aABB, entity -> entity instanceof ILeash leashable && predicate.test(leashable))
                 .stream()
-                .map(Mob.class::cast)
+                .map(ILeash.class::cast)
                 .toList();
     }
 
@@ -48,14 +48,14 @@ public interface AreaLeash {
     }
 
     static boolean dropAllLeashConnections(Mob mob, @Nullable Player player) {
-        List<Mob> list = leashableLeashedTo(mob);
+        List<ILeash> list = leashableLeashedTo(mob);
         boolean bl = !list.isEmpty();
         if (mob.isLeashed()) {
             mob.dropLeash(true, true);
             bl = true;
         }
 
-        for (Mob leashable2 : list) {
+        for (ILeash leashable2 : list) {
             leashable2.dropLeash(true, true);
         }
 

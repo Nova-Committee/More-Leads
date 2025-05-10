@@ -95,6 +95,10 @@ public abstract class BoatMixin extends Entity implements ILeash {
 
     @Inject(method = "interact", at = @At(value = "HEAD"), cancellable = true)
     public void moreleads$interact(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+        if (player.level().isClientSide) {
+            cir.setReturnValue(InteractionResult.SUCCESS);
+            return;
+        }
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (moreLeads$self.isAlive()
                 && player.isSecondaryUseActive()
@@ -106,7 +110,8 @@ public abstract class BoatMixin extends Entity implements ILeash {
                 }
 
                 moreLeads$self.level().gameEvent(GameEvent.ENTITY_INTERACT, moreLeads$self.blockPosition(), GameEvent.Context.of(player));
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+                cir.setReturnValue(InteractionResult.SUCCESS);
+                return;
             }
         }
 
@@ -147,7 +152,7 @@ public abstract class BoatMixin extends Entity implements ILeash {
 
     @Override
     public @Nullable Entity moreLeads$getLeashHolder() {
-        if (this.moreLeads$leashHolder == null && this.moreLeads$delayedLeashHolderId != 0 && this.level().isClientSide) {
+        if (this.moreLeads$leashHolder == null && this.moreLeads$delayedLeashHolderId != 0) {
             this.moreLeads$leashHolder = this.level().getEntity(this.moreLeads$delayedLeashHolderId);
         }
 
